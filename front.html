@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript" defer>
+    inputs = 3
+    function addRow(event) {
+      //Create new rows so you can create differente types of troops in the army
+      id = event.target.id;
+      oldCheckbox = document.getElementById("c" + id.substring(1));
+      oldCheckbox.checked = true; //Check for new troop
+      document.getElementById(id).removeEventListener("input", addRow) //remove condition to create new row
+
+      //creating inputs elements and putting them inside the table
+      var checkbox = document.createElement("input");
+      checkbox.setAttribute('type', 'checkbox');
+      checkbox.setAttribute('id', "c" + inputs.toString());
+      var text = document.createElement("input");
+      text.setAttribute('type', 'text');
+      text.setAttribute('id', "t" + inputs.toString());
+      text.setAttribute('name', "t" + inputs.toString());
+      text.setAttribute("placeholder", "New troop type");
+      text.addEventListener("input", addRow);
+      var table = document.getElementById("table");
+      row = table.insertRow();
+      row.insertCell(0).append(checkbox);
+      row.insertCell(1).append(text);
+      inputs++;
+    }
+    function load() {
+      document.getElementById("iframe").setAttribute("height","0px")
+      var input = document.getElementById("t" + inputs.toString());
+      input.addEventListener("input", addRow);
+      inputs++;
+    }
+    function send() {
+      //Clear text fields without checked checkbox
+      document.getElementById("iframe").setAttribute("height","auto")
+      for (let i = 1; i < inputs; i++) {
+        if (!document.getElementById("c" + i).checked) {
+          document.getElementById("t" + i).value = "";
+        }
+      }
+      document.getElementById("form").submit()
+    }
+  </script>
+  <meta charset=utf-8 />
+  <title>Army Creator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="load()">
+  <img src='https://res.cloudinary.com/dk-find-out/image/upload/q_80,w_1920,f_auto/MA_00527974_kafc25.jpg'>
+  <div id="main">
+      <a href="https://github.com/alessandroBrugnera9/army/blob/main/README.md">Documentation</a>
+<form id="form" action="/api/pretty" method="POST" target="iframe">
+      <table id="table">
+        <p>Number of Troops: <input type="number" name="num" placeholder="Number" required style="width: 9em;"></p>
+        <tr>
+          <th>Include</th>
+          <th>Troop Type</th>
+        </tr>
+        <tr>
+          <td>
+            <input type="checkbox" id="c1" checked>
+          </td>
+          <td>
+            <input type="text" id="t1" name="t1" value="Swordsman">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="checkbox" id="c2" checked>
+          </td>
+          <td>
+            <input type="text" id="t2" name="t2" value="Archer">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="checkbox" id="c3">
+          </td>
+          <td>
+            <input type="text" id="t3" name="t3" placeholder="New troop type">
+          </td>
+        </tr>
+      </table>
+      <br>
+      <button onclick="send()">Generate Army</button>
+    </form>
+    <iframe name="iframe" id="iframe" frameBorder="0">
+    </iframe>
+  </div>
+
+</body>
+
+</html>
